@@ -118,11 +118,11 @@ function PropertiesComponent({
 	}, [element, form]);
 
 	function applyChanges(values: propertiesFormSchemaType) {
+		const { title } = values;
 		updateElement(element.id, {
 			...element,
 			extraAttributes: {
-				...element.extraAttributes,
-				...values,
+				title,
 			},
 		});
 	}
@@ -148,8 +148,6 @@ function PropertiesComponent({
 									}}
 								/>
 							</FormControl>
-
-							<FormDescription>The title for the field.</FormDescription>
 
 							<FormMessage />
 						</FormItem>
