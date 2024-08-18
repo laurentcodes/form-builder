@@ -29,7 +29,7 @@ import Link from 'next/link';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 
 function FormBuilder({ form }: { form: Form }) {
-	const { setElements } = useDesigner();
+	const { setElements, setSelectedElement } = useDesigner();
 	const [isReady, setIsReady] = useState<boolean>(false);
 
 	const mouseSensor = useSensor(MouseSensor, {
@@ -51,6 +51,8 @@ function FormBuilder({ form }: { form: Form }) {
 		if (isReady) return;
 
 		const elements = JSON.parse(form.content);
+
+		setSelectedElement(null);
 
 		setElements(elements);
 

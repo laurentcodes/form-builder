@@ -5,8 +5,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { LuHeading1 } from 'react-icons/lu';
-
+import { BsTextParagraph } from 'react-icons/bs';
 
 import {
 	ElementsType,
@@ -21,24 +20,24 @@ import {
 	FormField,
 	FormItem,
 	FormLabel,
-	FormMessage
+	FormMessage,
 } from '../ui/form';
-import { Input } from '../ui/input';
+import { Textarea } from '../ui/textarea';
 import { Label } from '../ui/label';
 
 import useDesigner from '../hooks/useDesigner';
 
-const type: ElementsType = 'TitleField';
+const type: ElementsType = 'ParagraphField';
 
 const extraAttributes = {
-	title: 'Title Field',
+	text: 'Text Here',
 };
 
 const propertiesScheme = z.object({
-	title: z.string().min(2).max(50),
+	text: z.string().min(2).max(500),
 });
 
-export const TitleFieldFormElement: FormElement = {
+export const ParagraphFieldFormElement: FormElement = {
 	type,
 	construct: (id: string) => ({
 		id,
@@ -46,8 +45,8 @@ export const TitleFieldFormElement: FormElement = {
 		extraAttributes,
 	}),
 	designerBtnElement: {
-		icon: LuHeading1,
-		label: 'Title Field',
+		icon: BsTextParagraph,
+		label: 'Paragraph Field',
 	},
 	designerComponent: DesignerComponent,
 	formComponent: FormComponent,
@@ -68,12 +67,12 @@ function DesignerComponent({
 	elementInstance: FormElementInstance;
 }) {
 	const element = elementInstance as CustomInstance;
-	const { title } = element.extraAttributes;
+	const { text } = element.extraAttributes;
 
 	return (
 		<div className='flex flex-col gap-2 w-full'>
-			<Label className='text-muted-foreground'>Title Field</Label>
-			<p className='text-xl'>{title}</p>
+			<Label className='text-muted-foreground'>Paragraph Field</Label>
+			<p>{text}</p>
 		</div>
 	);
 }
@@ -88,9 +87,9 @@ function FormComponent({
 }) {
 	const element = elementInstance as CustomInstance;
 
-	const { title } = element.extraAttributes;
+	const { text } = element.extraAttributes;
 
-	return <p className='text-xl'>{title}</p>;
+	return <p>{text}</p>;
 }
 
 function PropertiesComponent({
@@ -106,7 +105,7 @@ function PropertiesComponent({
 		resolver: zodResolver(propertiesScheme),
 		mode: 'onBlur',
 		defaultValues: {
-			title: element.extraAttributes.title,
+			text: element.extraAttributes.text,
 		},
 	});
 
@@ -115,11 +114,11 @@ function PropertiesComponent({
 	}, [element, form]);
 
 	function applyChanges(values: propertiesFormSchemaType) {
-		const { title } = values;
+		const { text } = values;
 		updateElement(element.id, {
 			...element,
 			extraAttributes: {
-				title,
+				text,
 			},
 		});
 	}
@@ -133,12 +132,13 @@ function PropertiesComponent({
 			>
 				<FormField
 					control={form.control}
-					name='title'
+					name='text'
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Title</FormLabel>
+							<FormLabel>Text</FormLabel>
 							<FormControl>
-								<Input
+								<Textarea
+									rows={5}
 									{...field}
 									onKeyDown={(e) => {
 										if (e.key === 'Enter') e.currentTarget.blur();

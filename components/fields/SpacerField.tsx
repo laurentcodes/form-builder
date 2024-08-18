@@ -5,8 +5,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { LuHeading1 } from 'react-icons/lu';
-
+import { LuSeparatorHorizontal } from 'react-icons/lu';
 
 import {
 	ElementsType,
@@ -21,24 +20,24 @@ import {
 	FormField,
 	FormItem,
 	FormLabel,
-	FormMessage
+	FormMessage,
 } from '../ui/form';
-import { Input } from '../ui/input';
+import { Slider } from '../ui/slider';
 import { Label } from '../ui/label';
 
 import useDesigner from '../hooks/useDesigner';
 
-const type: ElementsType = 'TitleField';
+const type: ElementsType = 'SpacerField';
 
 const extraAttributes = {
-	title: 'Title Field',
+	height: 20, // px
 };
 
 const propertiesScheme = z.object({
-	title: z.string().min(2).max(50),
+	height: z.number().min(5).max(50),
 });
 
-export const TitleFieldFormElement: FormElement = {
+export const SpacerFieldFormElement: FormElement = {
 	type,
 	construct: (id: string) => ({
 		id,
@@ -46,8 +45,8 @@ export const TitleFieldFormElement: FormElement = {
 		extraAttributes,
 	}),
 	designerBtnElement: {
-		icon: LuHeading1,
-		label: 'Title Field',
+		icon: LuSeparatorHorizontal,
+		label: 'Spacer Field',
 	},
 	designerComponent: DesignerComponent,
 	formComponent: FormComponent,
@@ -68,12 +67,12 @@ function DesignerComponent({
 	elementInstance: FormElementInstance;
 }) {
 	const element = elementInstance as CustomInstance;
-	const { title } = element.extraAttributes;
+	const { height } = element.extraAttributes;
 
 	return (
-		<div className='flex flex-col gap-2 w-full'>
-			<Label className='text-muted-foreground'>Title Field</Label>
-			<p className='text-xl'>{title}</p>
+		<div className='flex flex-col gap-2 w-full items-center'>
+			<Label className='text-muted-foreground'>Spacer Field: {height}px</Label>
+			<LuSeparatorHorizontal className='h-8 w-8' />
 		</div>
 	);
 }
@@ -82,15 +81,12 @@ function FormComponent({
 	elementInstance,
 }: {
 	elementInstance: FormElementInstance;
-	submitValue?: SubmitFunction;
-	isInvalid?: boolean;
-	defaultValue?: string;
 }) {
 	const element = elementInstance as CustomInstance;
 
-	const { title } = element.extraAttributes;
+	const { height } = element.extraAttributes;
 
-	return <p className='text-xl'>{title}</p>;
+	return <div style={{ height, width: '100%' }}></div>;
 }
 
 function PropertiesComponent({
@@ -106,7 +102,7 @@ function PropertiesComponent({
 		resolver: zodResolver(propertiesScheme),
 		mode: 'onBlur',
 		defaultValues: {
-			title: element.extraAttributes.title,
+			height: element.extraAttributes.height,
 		},
 	});
 
@@ -115,11 +111,11 @@ function PropertiesComponent({
 	}, [element, form]);
 
 	function applyChanges(values: propertiesFormSchemaType) {
-		const { title } = values;
+		const { height } = values;
 		updateElement(element.id, {
 			...element,
 			extraAttributes: {
-				title,
+				height,
 			},
 		});
 	}
@@ -133,15 +129,18 @@ function PropertiesComponent({
 			>
 				<FormField
 					control={form.control}
-					name='title'
+					name='height'
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Title</FormLabel>
+							<FormLabel>Height (px): {form.watch('height')}</FormLabel>
 							<FormControl>
-								<Input
-									{...field}
-									onKeyDown={(e) => {
-										if (e.key === 'Enter') e.currentTarget.blur();
+								<Slider
+									defaultValue={[field.value]}
+									min={5}
+									max={50}
+									step={1}
+									onValueChange={(value) => {
+										field.onChange(value[0]);
 									}}
 								/>
 							</FormControl>

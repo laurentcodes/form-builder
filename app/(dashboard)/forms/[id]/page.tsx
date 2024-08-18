@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
-import { formatDistance } from 'date-fns';
+import { format, formatDistance } from 'date-fns';
 
 import { LuView } from 'react-icons/lu';
-import { FaWpforms, FaEdit } from 'react-icons/fa';
+import { FaWpforms } from 'react-icons/fa';
 import { HiCursorClick } from 'react-icons/hi';
 import { TbArrowBounce } from 'react-icons/tb';
 
@@ -14,6 +14,9 @@ import VisitBtn from '@/components/VisitBtn';
 import FormLinkShare from '@/components/FormLinkShare';
 
 import { StatsCard } from '../../page';
+
+import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
 	Table,
 	TableBody,
@@ -125,6 +128,11 @@ async function SubmissionsTable({ id }: { id: number }) {
 	formElements.forEach((element) => {
 		switch (element.type) {
 			case 'TextField':
+			case 'NumberField':
+			case 'TextAreaField':
+			case 'DateField':
+			case 'SelectField':
+			case 'CheckboxField':
 				columns.push({
 					id: element.id,
 					label: element.extraAttributes?.label,
@@ -179,7 +187,9 @@ async function SubmissionsTable({ id }: { id: number }) {
 									/>
 								))}
 								<TableCell className='text-muted-foreground text-right'>
-									{formatDistance(row.submittedAt, new Date())}
+									{formatDistance(row.submittedAt, new Date(), {
+										addSuffix: true,
+									})}
 								</TableCell>
 							</TableRow>
 						))}
@@ -192,6 +202,19 @@ async function SubmissionsTable({ id }: { id: number }) {
 
 function RowCell({ type, value }: { type: ElementsType; value: string }) {
 	let node: ReactNode = value;
+
+	switch (type) {
+		case 'DateField':
+			if (!value) break;
+
+			const date = new Date(value);
+			node = <Badge variant={'outline'}>{format(date, 'dd/MM/yyyy')}</Badge>;
+
+			break;
+		case 'CheckboxField':
+			const checked = value === 'true';
+			node = <Checkbox checked={checked} disabled />;
+	}
 
 	return <TableCell>{node}</TableCell>;
 }

@@ -5,8 +5,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { LuHeading1 } from 'react-icons/lu';
-
+import { LuHeading2 } from 'react-icons/lu';
 
 import {
 	ElementsType,
@@ -21,24 +20,24 @@ import {
 	FormField,
 	FormItem,
 	FormLabel,
-	FormMessage
+	FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 
 import useDesigner from '../hooks/useDesigner';
 
-const type: ElementsType = 'TitleField';
+const type: ElementsType = 'SubTitleField';
 
 const extraAttributes = {
-	title: 'Title Field',
+	title: 'Subtitle Field',
 };
 
 const propertiesScheme = z.object({
 	title: z.string().min(2).max(50),
 });
 
-export const TitleFieldFormElement: FormElement = {
+export const SubTitleFieldFormElement: FormElement = {
 	type,
 	construct: (id: string) => ({
 		id,
@@ -46,8 +45,8 @@ export const TitleFieldFormElement: FormElement = {
 		extraAttributes,
 	}),
 	designerBtnElement: {
-		icon: LuHeading1,
-		label: 'Title Field',
+		icon: LuHeading2,
+		label: 'Subtitle Field',
 	},
 	designerComponent: DesignerComponent,
 	formComponent: FormComponent,
@@ -72,8 +71,8 @@ function DesignerComponent({
 
 	return (
 		<div className='flex flex-col gap-2 w-full'>
-			<Label className='text-muted-foreground'>Title Field</Label>
-			<p className='text-xl'>{title}</p>
+			<Label className='text-muted-foreground'>Subtitle Field</Label>
+			<p className='text-lg'>{title}</p>
 		</div>
 	);
 }
@@ -90,7 +89,7 @@ function FormComponent({
 
 	const { title } = element.extraAttributes;
 
-	return <p className='text-xl'>{title}</p>;
+	return <p className='text-lg'>{title}</p>;
 }
 
 function PropertiesComponent({
@@ -136,7 +135,7 @@ function PropertiesComponent({
 					name='title'
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Title</FormLabel>
+							<FormLabel>Subtitle</FormLabel>
 							<FormControl>
 								<Input
 									{...field}
